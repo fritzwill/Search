@@ -1,2 +1,95 @@
-# Search
-Recursively searches a directory and prints items it finds based on the specified options. Implemented in C and uses low-level system calls
+Members
+-------
+
+- Will Fritz 
+- Tommy Lynch
+
+We handled parsing command line options by using strcmp because there are many different options and the options are strings. This allowed us to better understand our own code as well. WE parsed each flag like we usually do in these assignments (while(argind < argc ...) Then we used srtcmp to see if the arg was the same as the many different options. We used this to populate the settings struct
+
+We walkd directories by testing if the given path is a directory, and if it is not then the error is displayed.  If it is a directory, the directory is then read using readdir. lstat, is then used on the readdir() object to populate a stat struct. After this, the program checks if the name of the read file is '.'. If it is then if the root is not filtered out, execute is called on the root. After checking for '.', the programs checks if the file is '..'. If it is then continue is used to skip this file. Finally, if the files are not '.' or '..' then a new path was made from the current file being read. This path was made by combing the root and the name of the file being read using sprintf. THen, if the file is a directory, the program recursively calls search on the new path. IF the file is not a directory, then execute is called on the file if it is not filtered out. Finally, the directory is closed.
+
+Contributions
+-------------
+Will: utilities.c search.c Makefile 
+Tommy: main.c execute.c syscalls.py
+Collaborated on: filter.c README and debugging
+
+
+./search /etc
+  8043 lstat
+   698 getdents
+   391 open
+   351 close
+    26 write
+    24 stat
+     9 mmap
+     4 brk
+     3 mprotect
+     3 fstat
+     1 read
+     1 munmap
+     1 ioctl
+     1 fcntl
+     1 execve
+     1 arch_prctl
+     1 access
+Find /etc
+   792 open
+   715 newfstatat
+   712 close
+   703 fchdir
+   698 getdents
+   359 fstat
+   106 write
+    25 mmap
+    24 stat
+    13 mprotect
+    10 read
+     5 brk
+     4 munmap
+     3 ioctl
+     2 rt_sigaction
+     2 futex
+     1 uname
+     1 statfs
+     1 set_tid_address
+     1 set_robust_list
+     1 rt_sigprocmask
+     1 getrlimit
+     1 fcntl
+     1 execve
+     1 arch_prctl
+     1 access
+./search /etc -exec echo \{\}\;
+  8043 lstat
+  3673 wait4
+  3673 clone
+   698 getdents
+   391 open
+   351 close
+    24 stat
+     8 mmap
+     4 brk
+     3 mprotect
+     2 fstat
+     1 read
+     1 munmap
+     1 fcntl
+     1 execve
+     1 arch_prctl
+     1 access
+ calls syscall
+------ ----------------
+find /etc -exec echo \{\} \;
+    72 open
+    26 mmap
+    24 stat
+    13 mprotect
+    13 close
+    12 write
+    11 fstat
+    10 read
+     3 munmap
+     3 brk
+     2 rt_sigaction
+     1 rt_sigprocmask
